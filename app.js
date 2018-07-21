@@ -29,8 +29,13 @@ if(!isProduction){
 }
 
 //Configure Mongoose
-mongoose.connect('mongofdb://localhost/passport-tutorial');
+mongoose.connect('mongodb://localhost/passport-tutorial');
 mongoose.set('debug', true);
+
+//Models and Routes
+require('./models/Users');
+require('./config/passport');
+app.use(require('./routes'));
 
 //Error handlers & middlewares
 if(!isProduction){
