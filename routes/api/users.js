@@ -4,6 +4,26 @@ const router = require('express').Router();
 const auth = require('../auth');
 const Users = mongoose.model('Users');
 
+/**
+ * @swagger
+ * /users:
+ *   post:
+ *     tags:
+ *       - users
+ *     description: Creates a new user
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: tarun
+ *         description: user object
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/user'
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ */
 //POST new user route (optional, everyone has access)
 //Register
 router.post('/', auth.optional, (req, res, next) => {
@@ -83,4 +103,23 @@ router.get('/current', auth.required, (req, res, next) => {
     });
 });
 
+/**
+* @swagger
+* /users:
+*   get:
+*     tags:
+*       - users
+*     description: Returns all users
+*     produces:
+*       - application/json
+*     responses:
+*       200:
+*         description: An array of users
+*         schema:
+*           $ref: '#/definitions/users'
+*/
+
+router.get('/', auth.optional, (req, res, next) => {
+  return res.json({status: "I work"});
+})
 module.exports = router;

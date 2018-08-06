@@ -6,6 +6,10 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const errorHandler = require('errorhandler');
 
+var swaggerJSDoc = require('swagger-jsdoc'),
+    swaggerUi = require('swagger-ui-express')
+    swaggerDocument = require('./swagger.json');
+
 //Configure mongoose's promise to global promise
 mongoose.promise = global.Promise;
 
@@ -35,7 +39,43 @@ mongoose.set('debug', true);
 //Models and Routes
 require('./models/Users');
 require('./config/passport');
-app.use(require('./routes'));
+var router = require('./routes')
+//app.use(router);
+
+// swagger definition
+var swaggerDefinition = {
+  info: {
+    title: 'Node Swagger API',
+    version: '1.0.0',
+    description: 'Demonstrating how to describe a RESTful API with Swagger-ui',
+  },
+  host: 'localhost:8000',
+  basePath: '/',
+  swagger: "2.0",
+  paths: { },
+  definitions: { },
+  responses: { },
+  parameters: { },
+  securityDefinitions: { }
+};
+// options for the swagger docs
+var options = {
+  // import swaggerDefinitions
+  swaggerDefinition: swaggerDefinition,
+  // path to the API docs
+  apis: ['./**/routes/*.js','routes.js'],// pass all in array
+  };
+// initialize swagger-jsdoc
+var swaggerSpec = swaggerJSDoc(options);
+
+// serve swagger
+/*app.get('/swagger.json', function(req, res) {
+   res.setHeader('Content-Type', 'application/json');
+   res.send(swaggerSpec);
+ });*/
+
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/', router);
 
 //Error handlers & middlewares
 if(!isProduction){
